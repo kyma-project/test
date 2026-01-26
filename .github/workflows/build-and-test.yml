@@ -30,10 +30,10 @@ jobs:
         run: |
             echo "Testing ${CURRENT_RELEASE}"
 
-   upload-artifact:
-     runs-on: ubuntu-latest
+  upload-artifact:
+    runs-on: ubuntu-latest
   
-     steps:
+    steps:
       - name: Save release version
         env:
           CURRENT_RELEASE: ${{ inputs.version }}
