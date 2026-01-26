@@ -55,7 +55,8 @@ jobs:
         with:
           project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID}}
       
-      - name: Upload <module-name>-<release-version>-logs.zip to GCS # adjust filename
+      - name: Upload report to the GCP bucket
+        env:
+          REPO: ${{ github.event.repository.name }}
         run: | 
-          LOGS=$(ls *-logs.zip)
-          gsutil cp "$LOGS" gs://kyma_release_test_logs/
+          gsutil cp "${REPO}_${RELEASE_VERSION}.zip" gs://kyma_release_test_logs/
