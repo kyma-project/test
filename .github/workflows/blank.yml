@@ -1,0 +1,61 @@
+name: Upload release report
+
+on:
+  workflow_run:
+    workflows: ["Build and Test"]
+    types: [completed]
+
+jobs:
+  monitor:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-version
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read release version
+        run: |
+          RELEASE_VERSION=$(cat release.txt)
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "Release number: $RELEASE_VERSION"
+
+      - name: Create job summary
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          echo "Fetching workflow run details..."
+          gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID > run_summary.json
+
+          echo "Fetching jobs details..."
+          gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/jobs > jobs_summary.json
+          
+          zip "${REPO}_${RELEASE_VERSION}.zip" run_summary.json jobs_summary.json
+
+          echo "Saved: ${REPO}_${RELEASE_VERSION}.zip"
+          
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.RELEASE_LOG_UPLOADER_SA }}
+            
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.GCP_KYMA_PROJECT_PROJECT_ID}}
+      
+      - name: Upload <module-name>-<release-version>-logs.zip to GCS # adjust filename
+        run: | 
+          LOGS=$(ls *-logs.zip)
+          gsutil cp "$LOGS" gs://kyma_release_test_logs/
