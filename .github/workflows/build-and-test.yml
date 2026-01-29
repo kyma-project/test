@@ -31,18 +31,11 @@ jobs:
         run: |
             echo "Testing ${CURRENT_RELEASE}"
 
-  upload-artifact:
-    runs-on: ubuntu-latest
-  
-    steps:
-      - name: Save release version
-        env:
-          CURRENT_RELEASE: ${{ inputs.version }}
-        run: | 
-          echo "$CURRENT_RELEASE" > release.txt
+  upload-release-report:
+    needs: [test]
+    if: ${{ needs.test.result == 'success' }}
+    uses: ./.github/workflows/upload-release-report.yml
+    with:
+      release_version: ${{ inputs.version }}
+    secrets: inherit
 
-      - name: Upload release number artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-version
-          path: release.txt
