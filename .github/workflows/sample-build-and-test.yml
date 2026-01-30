@@ -37,5 +37,6 @@ jobs:
     uses: kyma-project/compliancy/.github/workflows/upload-release-report.yml@main
     with:
       release_version: ${{ inputs.version }}
-    secrets: inherit
+    secrets:
+     RELEASE_LOG_UPLOADER_SA: ${{ secrets.RELEASE_LOG_UPLOADER_SA }}
 
