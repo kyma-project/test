@@ -48,10 +48,12 @@ jobs:
           gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/jobs > jobs_summary.json
 
           echo "Fetching logs from the run"
-          # gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs --output run_logs.zip
-
-          zip "${REPO}_${RELEASE_VERSION}.zip" run_summary.json jobs_summary.json run_logs.zip
-          echo "Saved: ${REPO}_${RELEASE_VERSION}.zip"
+          gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs > run_logs.zip
+          
+          zip "${REPO}_${RELEASE_VERSION}.zip" \
+            run_summary.json \
+            jobs_summary.json \
+            run_logs.zip
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
