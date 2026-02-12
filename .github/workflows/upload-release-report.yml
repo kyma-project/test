@@ -49,6 +49,7 @@ jobs:
 
           echo "Fetching logs from the run"
           gh run view $RUN_ID --repo $OWNER/$REPO --log > run.log
+          cat run.log
 
           zip "${REPO}_${RELEASE_VERSION}.zip" run_summary.json jobs_summary.json run.log
           echo "Saved: ${REPO}_${RELEASE_VERSION}.zip"
