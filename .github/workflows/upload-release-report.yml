@@ -48,9 +48,9 @@ jobs:
           gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/jobs > jobs_summary.json
 
           echo "Fetching logs from the run"
-          #gh run view $RUN_ID --log > run.log
+          gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs --output run_logs.zip
 
-          zip "${REPO}_${RELEASE_VERSION}.zip" run_summary.json jobs_summary.json run.log
+          zip "${REPO}_${RELEASE_VERSION}.zip" run_summary.json jobs_summary.json run_logs.zip
           echo "Saved: ${REPO}_${RELEASE_VERSION}.zip"
 
       - name: Authenticate to GCP
