@@ -48,7 +48,7 @@ jobs:
           gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/jobs > jobs_summary.json
 
           echo "Fetching logs from the run"
-          gh run view $RUN_ID --log > run.log
+          #gh run view $RUN_ID --log > run.log
 
           zip "${REPO}_${RELEASE_VERSION}.zip" run_summary.json jobs_summary.json run.log
           echo "Saved: ${REPO}_${RELEASE_VERSION}.zip"
