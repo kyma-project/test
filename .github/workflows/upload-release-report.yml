@@ -50,7 +50,7 @@ jobs:
           gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/jobs > jobs_summary.json
   
           echo "Fetching logs from the run"
-          gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs > run_logs.zip
+          # gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs > run_logs.zip
           
           zip "${REPO}_${RELEASE_VERSION}.zip" \
             run_summary.json \
