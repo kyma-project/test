@@ -2,7 +2,7 @@ name: Sample Build and Test
 
 permissions:
   contents: read
-  actions: write
+  actions: read
 
 on:
   workflow_dispatch:
