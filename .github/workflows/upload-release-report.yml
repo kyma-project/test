@@ -17,9 +17,9 @@ on:
       RELEASE_LOG_UPLOADER_SA:
         description: "Service account used to upload release reports to GCP"
         required: true
-      RELEASE_LOG_UPLOADER_GH_TOKEN:
-        description: "Kyma-bot account used to get github logs"
-        required: true
+      #RELEASE_LOG_UPLOADER_GH_TOKEN:
+      #  description: "Kyma-bot account used to get github logs"
+      #  required: true
  
 jobs:
   upload-release-report:
@@ -50,8 +50,8 @@ jobs:
           echo "Fetching jobs details..."
           gh api repos/$OWNER/$REPO/actions/runs/$RUN_ID/jobs > jobs_summary.json
   
-          echo "Fetching logs from the run"
-          gh run view "$RUN_ID" --repo "$OWNER/$REPO" --log > run.log   
+          #echo "Fetching logs from the run"
+          #gh run view "$RUN_ID" --repo "$OWNER/$REPO" --log > run.log   
           
           zip "${REPO}_${RELEASE_VERSION}.zip" \
             run_summary.json \
