@@ -20,6 +20,8 @@ on:
       #RELEASE_LOG_UPLOADER_GH_TOKEN:
       #  description: "Kyma-bot account used to get github logs"
       #  required: true
+env:
+ GH_TOKEN: ${{ secrets.RELEASE_LOG_UPLOADER_GH_TOKEN }} 
  
 jobs:
   upload-release-report:
