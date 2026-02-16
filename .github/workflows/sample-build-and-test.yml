@@ -39,4 +39,5 @@ jobs:
       release_version: ${{ inputs.version }}
     secrets:
      RELEASE_LOG_UPLOADER_SA: ${{ secrets.RELEASE_LOG_UPLOADER_SA }}
+     RELEASE_LOG_UPLOADER_GH_TOKEN: ${{ secrets.RELEASE_LOG_UPLOADER_GH_TOKEN }}
 
