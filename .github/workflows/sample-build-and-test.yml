@@ -31,14 +31,14 @@ jobs:
         run: |
             echo "Testing ${CURRENT_RELEASE}"
 
-  upload-release-report:
-    needs: [test]
-    if: ${{ needs.test.result == 'success' }}
-    uses: kyma-project/compliancy/.github/workflows/upload-release-report.yml@main
-    with:
-      release_version: ${{ inputs.version }}
-    secrets:
-     RELEASE_LOG_UPLOADER_SA: ${{ secrets.RELEASE_LOG_UPLOADER_SA }}
+  # upload-release-report:
+  #   needs: [test]
+  #   if: ${{ needs.test.result == 'success' }}
+  #   uses: kyma-project/compliancy/.github/workflows/upload-release-report.yml@main
+  #   with:
+  #     release_version: ${{ inputs.version }}
+  #   secrets:
+  #    RELEASE_LOG_UPLOADER_SA: ${{ secrets.RELEASE_LOG_UPLOADER_SA }}
 
   notify:
     needs: test
