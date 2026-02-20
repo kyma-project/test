@@ -1,4 +1,4 @@
-name: Upload logs
+name: Release report
 
 on:
   repository_dispatch:
