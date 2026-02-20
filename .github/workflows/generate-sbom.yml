@@ -1,0 +1,62 @@
+name: Generate SBOM from Container Image
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: "Image name to generate SBOM from"
+        required: true
+        type: string
+      release_version:
+        description: "Release version label"
+        required: false
+        type: string
+      upload-artifact:
+        description: "Upload SBOM artifact"
+        required: false
+        default: true
+        type: boolean
+
+    outputs:
+      sbom-path:
+        description: "Generated SBOM file path"
+        value: ${{ jobs.sbom.outputs.sbom-path }}
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    outputs:
+      sbom-path: ${{ steps.meta.outputs.sbom_path }}
+
+    steps:
+      - name: Checkout (optional, for metadata)
+        uses: actions/checkout@v4
+
+      - name: Install Syft (for image SBOM)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Generate SBOM from image
+        run: |
+          IMAGE="${{ inputs.image }}"
+          echo "Generating SBOM for $IMAGE"
+          syft $IMAGE -o cyclonedx-json --schema-version 1.4 > sbom.json
+
+      - name: Rename SBOM with metadata
+        id: meta
+        run: |
+          VERSION="${{ inputs.release_version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION="${{ github.sha }}"
+          fi
+          FILE="sbom-${{ github.event.repository.name }}-${VERSION}.json"
+          mv sbom.json "$FILE"
+          echo "sbom_path=$FILE" >> $GITHUB_OUTPUT
+
+      - name: Upload SBOM artifact
+        if: inputs.upload-artifact == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: ${{ steps.meta.outputs.sbom_path }}
