@@ -39,3 +39,11 @@ jobs:
       release_version: ${{ inputs.version }}
     secrets:
      RELEASE_LOG_UPLOADER_SA: ${{ secrets.RELEASE_LOG_UPLOADER_SA }}
+
+  notify:
+    needs: test
+    if: ${{ needs.test.result == 'success' }}
+    uses: kyma-project/compliancy/.github/workflows/notify-release-report.yml@main
+    secrets: inherit
+    with:
+      release_version: ${{ inputs.version }}
