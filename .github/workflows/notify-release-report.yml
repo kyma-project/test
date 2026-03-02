@@ -19,7 +19,7 @@ jobs:
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
             -H "Authorization: Bearer ${{ secrets.RELEASE_LOG_UPLOADER_GH_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/kyma-project/compliancy/dispatches \
+            https://github.tools.sap/api/v3/repos/kyma/compliancy/dispatches \
             -d '{
               "event_type": "upload-release-report",
               "client_payload": {
