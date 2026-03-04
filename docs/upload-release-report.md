@@ -6,7 +6,7 @@ The goal is to upload logs from pre-release tests to a GCP bucket for auditing p
 
 ### `Upload release report` reusable workflow
 
-[Reusable workflow](https://github.com/kyma-project/compliancy/blob/main/.github/workflows/upload-release-report.yml) should be executed only when your pre-release tests are successfully completed.
+[Reusable workflow](https://github.com/kyma-project/compliancy/blob/main/.github/workflows/notify-release-report.yml) should be executed only when your pre-release tests are successfully completed.
 It will capture:
 - workflow status and a status of each job
 - logs from the test run
@@ -18,21 +18,19 @@ It requires specific permissions:
 ```
 permissions:
   contents: read
-  actions: write
+  actions: read
 ```
 It requires also:
 - `release_version`
-- `RELEASE_LOG_UPLOADER_SA` (it is already setup as global variable)
 - `needs` and `if` statement adjusted so that it is triggered only after the tests are successfully completed.
 
 Sample job configuration:
 ```
-  upload-release-report:
-    needs: [test]
+  notify:
+    needs: test
     if: ${{ needs.test.result == 'success' }}
-    uses: kyma-project/compliancy/.github/workflows/upload-release-report.yml@main
+    uses: kyma-project/compliancy/.github/workflows/notify-release-report.yml@main
+    secrets: inherit
     with:
       release_version: ${{ inputs.version }}
-    secrets:
-     RELEASE_LOG_UPLOADER_SA: ${{ secrets.RELEASE_LOG_UPLOADER_SA }}
 ```
